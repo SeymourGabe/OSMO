@@ -33,14 +33,12 @@ import datetime as dt
 
 
 #  GTS: Get current datetime in YYYY-MM-DD_HH.MM. Create folder here
-timeStr = str(dt.datetime.today())
-timeLen = len(timeStr)
-timeStrSv = timeStr[:timeLen-10]
-timeStrSv = timeStrSv.replace(" ", "_")
-timeStrSv = timeStrSv.replace(":", ".")
+testDict = {}
+dateTime = osmo.getDateString()
+#print("dateTime = ", dateTime) 
 
-savePath = os.path.join(OSMOdir, timeStrSv)
-print("Saving variables to ", savePath, "\n")
+savePath = os.path.join(OSMOdir, dateTime)
+print("Saving variables to ", savePath, "\n") 
 
 print("os.path.isdir(savePath) = ", os.path.isdir(savePath))
 if (os.path.isdir(savePath)):
@@ -90,7 +88,11 @@ heightOrig = imOrig3D.shape[0]
 
 fT, nrays, indsImgEdge      = osmo.padTarget(imOrig3D);         #Assumes form [Z,X,Y] for imOrig3D
 fTorig                      = copy.deepcopy(fT)
-
+test1 = 1
+testDict['test1'] = test1
+print("testDict['test1'] = ", testDict['test1'])
+test1 = 2
+print("testDict['test1'] = ", testDict['test1'])
 
 # Plot Slices of target geometry
 ZslicesToPlot = np.array([fT.shape[0]//2]);  XslicesToPlot = np.array([fT.shape[1]//2]);   YslicesToPlot = np.array([int(fT.shape[2]*.76)]);

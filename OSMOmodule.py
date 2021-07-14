@@ -21,6 +21,8 @@ from PIL import Image
 from matplotlib_scalebar.scalebar import ScaleBar
 from matplotlib.ticker import MaxNLocator
 from scipy import ndimage
+import datetime as dt
+
 
 
 #os.chdir('C:/LTT/v1.6.10/python') #Add LTT python dll's to path
@@ -31,16 +33,29 @@ from LTTserver import LTTserver
 LTT = LTTserver()
 
 # ----------- Housekeeping functions ---------------
+def getDateString():
+    """
+    GTS: This function returns ta date string in the format 
+    YYYY-MM-DD_HH.MM. Used to create a folder to save vars to. 
+    """
+    timeStr = str(dt.datetime.today())
+    timeLen = len(timeStr)
+    timeStrSv = timeStr[:timeLen-10]
+    timeStrSv = timeStrSv.replace(" ", "_")
+    timeStrSv = timeStrSv.replace(":", ".")
+    return timeStrSv
+
 def saveVar(var, varName, folder):
     """
     GTS: This function takes a variable and path. Saves the variable to the path
     """
-    fldr = "C:/Users/Admin.DESKCOMPUTER/Desktop/OSMO/test"
+   # fldr = "C:/Users/Admin.DESKCOMPUTER/Desktop/OSMO/test"
     saveTo = fldr + "/" + varName
     print("saveTo = ", saveTo)
     np.save(saveTo, var)
     print("saved")
     
+#def 
     
     
 # ----------- Pre processing functions ---------------
