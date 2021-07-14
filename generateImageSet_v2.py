@@ -31,21 +31,27 @@ from matplotlib_scalebar.scalebar import ScaleBar
 import datetime as dt
 
 
+dtDefined = 0
+"""
+GTS: If dateTime below is defined, then OSMO will pickup from a past run
 
-#  GTS: Get current datetime in YYYY-MM-DD_HH.MM. Create folder here
-testDict = {}
-dateTime = osmo.getDateString()
-#print("dateTime = ", dateTime) 
+"""
+dateTime = '2021-07-14_16.05'
+
+if "dateTime" in locals():
+    dtDefined = 1
+else:
+    dateTime = osmo.getDateString()
 
 savePath = os.path.join(OSMOdir, dateTime)
 print("Saving variables to ", savePath, "\n") 
 
-print("os.path.isdir(savePath) = ", os.path.isdir(savePath))
-if (os.path.isdir(savePath)):
-    print(savePath, " already exists. Saving to existing folder")
-
+if (os.path.isdir(savePath) and not dtDefined):
+    print(savePath, " already exists. Saving to existing folder\n")
+elif (os.path.isdir(savePath) and dtDefined):
+    print("dateTime entered. Starting OSMO from old run.\n")
 else:
-    print(savePath, " does not exist. Creating folder")
+    print(savePath, " does not exist. Creating folder\n")
     os.mkdir(savePath)
 
 
@@ -145,29 +151,63 @@ lttpy.setup_LTT3D(LTT,angularRange,nAngles,nrays,alpha, pxsize, nslices)
 osmo.plotVolSlices_afterOpticalMag_withScaleBar(fT, pxsize, ZslicesToPlot, XslicesToPlot, YslicesToPlot,mapStr='bone',dpiToUse=500, scaleBarLengthFraction = .3,scalebarLocation = 'upper left'\
 , scaleColor = 'darkorange', scaleBarAlpha = 0, barRotation = 'vertical', frameState = False, darkBackground = False)
 
-
-voidInds, gelInds   = osmo.get_void_gel_indices(fTorig,LTT)                     # Where is in-part (gel), and out-of-part (void)?
+if dtDefined: 
+    voidIndsPath = os.path.join(savePath, "voidInds.npy")
+    voidInds = np.load(voidIndsPath)
+    
+    gelIndsPath = os.path.join(savePath, "gelInds.npy")
+    gelInds = np.load(gelIndsPath)
+else: 
+    voidInds, gelInds   = osmo.get_void_gel_indices(fTorig,LTT)
+                     # Where is in-part (gel), and out-of-part (void)?
 fT_LTTfiltered      = osmo.apply2DrampFilter(fT,LTT)                            # Apply a smoothed version of a 2D Ram-Lak filter
 
 #--------         OSMO Initilization     --------
-fm              = fT_LTTfiltered   
+if dtDefined: 
+    fmPath = os.path.join(savePath, "fm.npy")
+    fm = np.load(fmPath)
+else: 
+    fm              = fT_LTTfiltered   
+    
 #fm              = np.load(r"D:\SomeSavedArrays\6_9_2021 Stripes for Gabe\fm.npy") 
 #print('-------------------------------------------------------------------------------')
 #print('----------------------- Model loaded from previous run! -----------------------')
 #print('-------------------------------------------------------------------------------')                  
-f               = osmo.reconstructFromModel(fm,smallestProjVal,LTT,normEachSlice,smallestDMDgray)
+if dtDefined: 
+    fPath = os.path.join(savePath, "f.npy")
+    f = np.load(fPath)
+else: 
+    f = osmo.reconstructFromModel(fm,smallestProjVal,LTT,normEachSlice,smallestDMDgray)
 
 #--------     Initialize VER and PW Arrays     -------
-costVals        = [];  costVals         = np.append(costVals, [osmo.costFxn(f,voidInds,gelInds)], axis=0)
-processWindows  = [];  pw               = osmo.processWindow(0,f,voidInds,gelInds)[0]; 
-processWindows  = np.append(processWindows, [pw], axis=0)
+if dtDefined: 
+    costValsPath = os.path.join(savePath, "costVals.npy")
+    costVals = np.load(costValsPath)
+else: 
+    costVals        = [];  costVals         = np.append(costVals, [osmo.costFxn(f,voidInds,gelInds)], axis=0)
+
+
+if dtDefined: 
+    processWindowsPath = os.path.join(savePath, "processWindows.npy")
+    processWindows = np.load(processWindowsPath)
+else: 
+    processWindows  = [];  pw               = osmo.processWindow(0,f,voidInds,gelInds)[0]; 
+    processWindows  = np.append(processWindows, [pw], axis=0)
+    
+
 #costVals        = np.load(r"D:\SomeSavedArrays\6_9_2021 Stripes for Gabe\costVals.npy") 
 #processWindows  = np.load(r"D:\SomeSavedArrays\6_9_2021 Stripes for Gabe\processWindows.npy")
 
 
 #=======================================================================================================
 #=======================================================================================================  
-ii = 0;  run = 1 #                          OSMO LOOP  
+if dtDefined: 
+    iiPath = os.path.join(savePath, "ii.npy")
+    ii = np.load(iiPath)
+else: 
+    ii = 0;
+  
+run = 1 #                          OSMO LOOP  
 #==============================================================================
 while run == 1: 
     ii = ii + 1     # First value should be ii = 1, since we already did the 0th initialization step, and saved PW
@@ -187,7 +227,7 @@ while run == 1:
         plt.show();    
         
     if np.mod(ii, 10)==0 or ii == 1:
-        osmo.saveManyVars(fm, f, voidInds, gelInds, costVals, pw, ii, savePath)
+        osmo.saveManyVars(fm, f, voidInds, gelInds, costVals, processWindows, ii, savePath)
         
         
 #==============================================================================

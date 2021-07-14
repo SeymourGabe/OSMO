@@ -52,24 +52,24 @@ def saveVar(var, varName, folder):
     """
    # fldr = "C:/Users/Admin.DESKCOMPUTER/Desktop/OSMO/test"
     saveTo = folder + "/" + varName
-    print("saveTo = ", saveTo)
+   # print("saveTo = ", saveTo)
     np.save(saveTo, var)
-    print("saved")
+   # print("saved")
     
-def saveManyVars(fm, f, voidInds, gelInds, costVals, pw, ii, savePath):
+def saveManyVars(fm, f, voidInds, gelInds, costVals, processWindows, ii, savePath):
     """
     GTS: This function uses osmo.saveVar to save predetermined variables to 
     savePath folder.
     """
-    print("in saveManyVars")
+   # print("in saveManyVars")
     saveVar(fm, "fm", savePath)
     saveVar(f, "f", savePath)
     saveVar(voidInds, "voidInds", savePath)
     saveVar(gelInds, "gelInds", savePath)
     saveVar(costVals, "costVals", savePath)
-    saveVar(pw, "pw", savePath)
+    saveVar(processWindows, "processWindows", savePath)
     saveVar(ii, "ii", savePath)
-    print("finsihing saveManyVars")
+   # print("finsihing saveManyVars")
     
 # ----------- Pre processing functions ---------------
 def trimZeroSlices(f):
