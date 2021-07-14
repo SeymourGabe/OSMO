@@ -22,10 +22,35 @@ from scipy import fft
 from scipy import ndimage
 import copy
 import setUpLTTModule as lttpy
+OSMOdir = 'C:/Users/Admin.DESKCOMPUTER/Desktop/OSMO/'
+LTTdir = 'C:/Users/Admin.DESKCOMPUTER/Desktop/LTT_v1.6.30/python'
 os.chdir('C:/Users/Admin.DESKCOMPUTER/Desktop/OSMO') #Add LTT python dll's to path
 import OSMOmodule as osmo
 from matplotlib.ticker import MaxNLocator
 from matplotlib_scalebar.scalebar import ScaleBar
+import datetime as dt
+
+
+
+#  GTS: Get current datetime in YYYY-MM-DD_HH.MM. Create folder here
+timeStr = str(dt.datetime.today())
+timeLen = len(timeStr)
+timeStrSv = timeStr[:timeLen-10]
+timeStrSv = timeStrSv.replace(" ", "_")
+timeStrSv = timeStrSv.replace(":", ".")
+
+savePath = os.path.join(OSMOdir, timeStrSv)
+print("Saving variables to ", savePath, "\n")
+
+print("os.path.isdir(savePath) = ", os.path.isdir(savePath))
+if (os.path.isdir(savePath)):
+    print(savePath, " already exists. Saving to existing folder")
+
+else:
+    print(savePath, " does not exist. Creating folder")
+    os.mkdir(savePath)
+
+
 
 sb.set();               sb.set(font_scale=1.5)
 sb.set_style("white");  mapStr    = 'CMRmap'

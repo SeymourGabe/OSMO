@@ -30,7 +30,19 @@ os.chdir('C:/Users/Admin.DESKCOMPUTER/Desktop/LTT_v1.6.30/python') #Add LTT pyth
 from LTTserver import LTTserver
 LTT = LTTserver()
 
-
+# ----------- Housekeeping functions ---------------
+def saveVar(var, varName, folder):
+    """
+    GTS: This function takes a variable and path. Saves the variable to the path
+    """
+    fldr = "C:/Users/Admin.DESKCOMPUTER/Desktop/OSMO/test"
+    saveTo = fldr + "/" + varName
+    print("saveTo = ", saveTo)
+    np.save(saveTo, var)
+    print("saved")
+    
+    
+    
 # ----------- Pre processing functions ---------------
 def trimZeroSlices(f):
     # Takes a 3D array [z,x,y]
