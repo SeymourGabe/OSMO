@@ -22,6 +22,7 @@ from matplotlib_scalebar.scalebar import ScaleBar
 from matplotlib.ticker import MaxNLocator
 from scipy import ndimage
 import datetime as dt
+from dataclasses import dataclass
 
 
 
@@ -50,13 +51,25 @@ def saveVar(var, varName, folder):
     GTS: This function takes a variable and path. Saves the variable to the path
     """
    # fldr = "C:/Users/Admin.DESKCOMPUTER/Desktop/OSMO/test"
-    saveTo = fldr + "/" + varName
+    saveTo = folder + "/" + varName
     print("saveTo = ", saveTo)
     np.save(saveTo, var)
     print("saved")
     
-#def 
-    
+def saveManyVars(fm, f, voidInds, gelInds, costVals, pw, ii, savePath):
+    """
+    GTS: This function uses osmo.saveVar to save predetermined variables to 
+    savePath folder.
+    """
+    print("in saveManyVars")
+    saveVar(fm, "fm", savePath)
+    saveVar(f, "f", savePath)
+    saveVar(voidInds, "voidInds", savePath)
+    saveVar(gelInds, "gelInds", savePath)
+    saveVar(costVals, "costVals", savePath)
+    saveVar(pw, "pw", savePath)
+    saveVar(ii, "ii", savePath)
+    print("finsihing saveManyVars")
     
 # ----------- Pre processing functions ---------------
 def trimZeroSlices(f):
@@ -904,9 +917,6 @@ def saveImageSetWithoutRotation(g,path, CCWrotationInDegrees):
         im.save(path+'\\'+n.zfill(4)+'_'+str(CCWrotationInDegrees)+'degCCW.png')
 
     return
-
-
-
 
 
 

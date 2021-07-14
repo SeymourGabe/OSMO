@@ -88,11 +88,7 @@ heightOrig = imOrig3D.shape[0]
 
 fT, nrays, indsImgEdge      = osmo.padTarget(imOrig3D);         #Assumes form [Z,X,Y] for imOrig3D
 fTorig                      = copy.deepcopy(fT)
-test1 = 1
-testDict['test1'] = test1
-print("testDict['test1'] = ", testDict['test1'])
-test1 = 2
-print("testDict['test1'] = ", testDict['test1'])
+
 
 # Plot Slices of target geometry
 ZslicesToPlot = np.array([fT.shape[0]//2]);  XslicesToPlot = np.array([fT.shape[1]//2]);   YslicesToPlot = np.array([int(fT.shape[2]*.76)]);
@@ -189,6 +185,10 @@ while run == 1:
         plt.plot(dpi = 500);           ax = plt.plot(processWindows,linewidth=3);
         plt.title('Process Window');   plt.xlabel('Iterations');    plt.ylabel('Normalized Dose')
         plt.show();    
+        
+    if np.mod(ii, 10)==0 or ii == 1:
+        osmo.saveManyVars(fm, f, voidInds, gelInds, costVals, pw, ii, savePath)
+        
         
 #==============================================================================
 fRaw = copy.copy(f);    fmRaw = copy.copy(fm);  
